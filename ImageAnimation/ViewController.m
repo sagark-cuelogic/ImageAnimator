@@ -23,9 +23,8 @@
     ImageAnimationView *animatorView = [[ImageAnimationView alloc] initWithFrame:CGRectMake(20, 20, 150, 300)];
     
     NSArray *arrImageNames = [ImageAnimationView arrayWithNumberedNames:@"image" rangeStart:1 rangeEnd:16 suffixFormat:@"%i.png"];
-    NSArray *arrURLs = [ImageAnimationView arrayWithResourcePrefixedURLs:arrImageNames];
     
-    animatorView.animationURLs = arrURLs;
+    animatorView.animationImages = arrImageNames;
     // set animation speed
     animatorView.animationFrameDuration = Animation15FPS;
     
@@ -34,6 +33,10 @@
     
     [animatorView LoadAnimationData];
     [self.view addSubview:animatorView];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(animationDidStartNotification) name:AnimationDidStartNotification object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(animationDidStopNotification) name:AnimationDidStopNotification object:nil];
     
     [animatorView startAnimating];
     
@@ -44,6 +47,19 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+#pragma mark -
+#pragma mark ==============================
+#pragma mark Nofifications
+#pragma mark ==============================
+
+-(void)animationDidStartNotification{
+    
+}
+
+-(void)animationDidStopNotification{
+    
 }
 
 @end

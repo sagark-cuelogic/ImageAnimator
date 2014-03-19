@@ -26,7 +26,7 @@
 
 @public
 
-    NSArray *animationURLs;   // stores animation image path URLs
+    NSArray *animationImages;   // stores animation image/resource names
     NSTimeInterval animationFrameDuration; //
     NSInteger animationRepeatCount; // repeate count for animation
     
@@ -40,7 +40,7 @@
     NSInteger animationStep;
 }
 
-@property(nonatomic,strong)NSArray *animationURLs;
+@property(nonatomic,strong)NSArray *animationImages;
 @property(nonatomic,assign)NSTimeInterval animationFrameDuration;
 @property(nonatomic,assign)NSInteger animationRepeatCount;
 
@@ -76,10 +76,4 @@
 						 rangeStart:(NSInteger)rangeStart
 						   rangeEnd:(NSInteger)rangeEnd
 					   suffixFormat:(NSString*)suffixFormat;
-/*
- Given an array of resource names (as returned by arrayWithNumberedNames)
- create a new array that contains these resource names prefixed as
- resource paths and wrapped in a NSURL object.
-*/
- + (NSArray*) arrayWithResourcePrefixedURLs:(NSArray*)inNumberedNames;
 @end

@@ -11,7 +11,7 @@
 @implementation ImageAnimationView
 
 @synthesize animationRepeatCount;
-@synthesize animationURLs;
+@synthesize animationImages;
 @synthesize animationFrameDuration;
 
 - (id)initWithFrame:(CGRect)frame
@@ -30,27 +30,26 @@
 
 - (void) LoadAnimationData{
     // Animation data should have already been loaded into memory as a result of
-	// setting the animationURLs property
-    int numFrames = [animationURLs count];
+	// setting the animationImages property
+    int numFrames = [animationImages count];
 	self->animationNumFrames = numFrames;
     
-	NSAssert(animationURLs, @"animationURLs was not defined");
-	NSAssert([animationURLs count] > 1, @"animationURLs must include at least 2 urls");
+	NSAssert(animationImages, @"animationImages was not defined");
+	NSAssert([animationImages count] > 1, @"animationURLs must include at least 2 urls");
 	NSAssert(animationFrameDuration, @"animationFrameDuration was not defined");
     
-	// Load animationData by reading from animationURLs
-	NSMutableDictionary *dataDict = [NSMutableDictionary dictionaryWithCapacity:[animationURLs count]];
+	// Load animationData by reading from animationImages
+	NSMutableDictionary *dataDict = [NSMutableDictionary dictionaryWithCapacity:[animationImages count]];
     
-	NSMutableArray *muArray = [NSMutableArray arrayWithCapacity:[animationURLs count]];
-	for ( NSURL* aURL in animationURLs ) {
-		NSString *urlKey = aURL.path;
-		NSData *dataForKey = [dataDict objectForKey:urlKey];
+	NSMutableArray *muArray = [NSMutableArray arrayWithCapacity:[animationImages count]];
+	for ( NSString* iName in animationImages ) {
+		UIImage *dataForKey = [dataDict objectForKey:iName];
         
 		if (dataForKey == nil) {
-			dataForKey = [NSData dataWithContentsOfURL:aURL];
+			dataForKey = [UIImage imageNamed:iName];
 			NSAssert(dataForKey, @"dataForKey");
 			
-			[dataDict setObject:dataForKey forKey:urlKey];
+			[dataDict setObject:dataForKey forKey:iName];
 		}
         
 		[muArray addObject:dataForKey];
@@ -123,22 +122,6 @@
     
 }
 
-
-// returns array of image urls
-+ (NSArray*) arrayWithResourcePrefixedURLs:(NSArray*)inNumberedNames{
-    NSMutableArray *URLs = [[NSMutableArray alloc] initWithCapacity:[inNumberedNames count]];
-	NSBundle* appBundle = [NSBundle mainBundle];
-    
-	for ( NSString* path in inNumberedNames ) {
-		NSString* resPath = [appBundle pathForResource:path ofType:nil];
-		NSURL* aURL = [NSURL fileURLWithPath:resPath];
-        
-		[URLs addObject:aURL];
-	}
-	NSArray *newArray = [NSArray arrayWithArray:URLs];
-	return newArray;
-}
-
 #pragma mark -
 #pragma mark ==============================
 #pragma mark Private methods
@@ -149,6 +132,9 @@
 - (void)loadView {
    
 	// Foreground animation images
+    if (imageView != nil) {
+        [imageView removeFromSuperview];
+    }
 	UIImageView *myImageView = [[UIImageView alloc] initWithFrame:self.frame];
 	imageView = myImageView;
     [self addSubview:imageView];
@@ -166,9 +152,8 @@
 - (void) animationShowFrame: (NSInteger) frame {
 	if ((frame >= animationNumFrames) || (frame < 0))
 		return;
-	
-	NSData *data = [animationData objectAtIndex:frame];
-	UIImage *img = [UIImage imageWithData:data];
+    
+    UIImage *img = [animationData objectAtIndex:frame];
 	imageView.image = img;
 }
 
